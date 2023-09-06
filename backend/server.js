@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const databaseConnect = require('./config/database')
 const route = require('./routes')
+const cors = require('cors')
 
 
 dotenv.config({
@@ -20,6 +21,7 @@ app.use(
 );
 
 databaseConnect();
+app.use(cors())
 route(app);
 
 app.get('/', (req, res) => {
