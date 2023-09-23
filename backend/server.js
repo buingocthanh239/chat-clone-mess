@@ -21,7 +21,10 @@ app.use(
 );
 
 databaseConnect();
-app.use(cors())
+app.use(cors({
+    origin: "http://localhost:3000",
+    credentials: true
+}))
 route(app);
 
 app.get('/', (req, res) => {

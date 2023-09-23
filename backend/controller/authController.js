@@ -111,13 +111,20 @@ module.exports.loginUser = async (req, res, next) => {
     } else {
         try {
             const currUser = await userSchema.findOne({ email: email})
-            if (!currUser || !bcrypt.compare(password, currUser.password)) {
+            if (!currUser) {
                 res.status(400).json({
                     error: {
                         errorMessage: ['email or password is incorrect']
                     }
                 })
             } else {
+                if (!bcrypt.compareSync(password, currUser.password)) {
+                    return res.status(400).json({
+                        error: {
+                            errorMessage: ['email or password is incorrect']
+                        }
+                    })
+                }
                 const token = jwt.sign({
                     id: currUser._id,
                     username: currUser.username,
@@ -128,10 +135,11 @@ module.exports.loginUser = async (req, res, next) => {
                     expiresIn: process.env.TOKEN_EXP
                 })
                 const options = { expires : new Date(Date.now() + process.env.COOKIE_EXP * 24 * 60 * 60 * 1000 )}
-                res.status(200).cookie('authToken',token, options).json({
+                res.status(200).cookie('authToken',token, {...options, domain: 'localhost'}).json({
                     successMessage: 'login successfully',
                     token: token
                 })
+                
             }
         } catch (err) {
             res.status(500).json({
