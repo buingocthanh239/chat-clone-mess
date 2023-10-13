@@ -1,8 +1,9 @@
 const router = require('express').Router();
-const { authMiddleware } = require('../middleware/authMiddleware')
-const { getFriends } = require('../controller/messengerController')
+const { getFriends, postMessage, getMessageWithIdUser, postImage } = require('../controller/messengerController')
 
-router.get('/users',authMiddleware, getFriends)
-
+router.get('/users', getFriends)
+router.post('/send-message', postMessage)
+router.post('/send-image', postImage)
+router.get('/get-messages/:reseverId', getMessageWithIdUser)
 
 module.exports = router
